@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -10,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { formatEventRange } from "@/lib/format/datetime";
 import { getEventCardImages } from "@/lib/events/card-images";
+import { categoryGradient, categoryIcon } from "@/lib/events/category-art";
 import type { PublicEvent } from "@/lib/types/event";
 import type { TicketPublic } from "@/lib/types/booking";
 
@@ -28,11 +30,14 @@ export function EventTicketCard({
   packageName,
   guestName,
 }: EventTicketCardProps) {
+  const [imgFailed, setImgFailed] = useState(false);
   const total = ticket.admissionsTotal ?? 1;
   const used = ticket.admissionsUsed ?? 0;
   const remaining = ticket.admissionsRemaining ?? Math.max(0, total - used);
   const fullyUsed = ticket.status === "checked_in" || remaining === 0;
   const coverImage = getEventCardImages(event)[0];
+  const hasCover = Boolean(coverImage) && !imgFailed;
+  const icon = categoryIcon(event.category);
 
   return (
     <article
@@ -43,13 +48,38 @@ export function EventTicketCard({
           : "border-primary/25 hover:shadow-2xl",
       ].join(" ")}
     >
-      {coverImage ? (
-        <div
-          className="h-28 bg-cover bg-center"
-          style={{ backgroundImage: `url(${coverImage})` }}
-        />
+      {hasCover ? (
+        <div className="relative aspect-[16/9] min-h-[180px] w-full overflow-hidden bg-ink sm:min-h-[220px]">
+          {/* Ambient background blur */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={coverImage}
+            alt=""
+            className="absolute inset-0 h-full w-full scale-110 object-cover object-center opacity-40 blur-lg"
+            aria-hidden
+          />
+          {/* Main image with object-top so faces, heads and headers are fully visible */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={coverImage}
+            alt={event.title}
+            className="relative h-full w-full object-cover object-top transition duration-300"
+            onError={() => setImgFailed(true)}
+          />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-black/25" />
+        </div>
       ) : (
-        <div className="h-28 bg-gradient-to-br from-primary via-primary/80 to-accent-gold/80" />
+        <div
+          className={[
+            "relative aspect-[16/9] min-h-[140px] w-full overflow-hidden bg-gradient-to-br sm:min-h-[160px]",
+            categoryGradient(event.category),
+          ].join(" ")}
+        >
+          <div className="absolute inset-0 flex items-center justify-center opacity-30">
+            <FontAwesomeIcon icon={icon} className="h-20 w-20 text-white/40" />
+          </div>
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent" />
+        </div>
       )}
 
       <div className="relative bg-gradient-to-b from-ink to-ink/95 px-5 pb-5 pt-4 text-white">
