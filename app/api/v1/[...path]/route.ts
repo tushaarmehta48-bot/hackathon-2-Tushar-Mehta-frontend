@@ -17,6 +17,10 @@ const HOP_BY_HOP = new Set([
   "content-length",
 ]);
 
+/** Never forward these — avoids double-decode / ERR_CONTENT_DECODING_FAILED in browsers. */
+const STRIP_REQUEST = new Set(["accept-encoding"]);
+const STRIP_RESPONSE = new Set(["content-encoding", "content-length"]);
+
 function rewriteSetCookie(value: string): string {
   return value
     .replace(/;\s*Domain=[^;]*/gi, "")
@@ -31,10 +35,13 @@ async function proxyRequest(req: NextRequest, pathSegments: string[]) {
 
   const headers = new Headers();
   req.headers.forEach((value, key) => {
-    if (!HOP_BY_HOP.has(key.toLowerCase())) {
-      headers.set(key, value);
+    const lower = key.toLowerCase();
+    if (HOP_BY_HOP.has(lower) || STRIP_REQUEST.has(lower)) {
+      return;
     }
+    headers.set(key, value);
   });
+  headers.set("Accept-Encoding", "identity");
 
   const init: RequestInit = {
     method: req.method,
@@ -67,9 +74,10 @@ async function proxyRequest(req: NextRequest, pathSegments: string[]) {
     if (lower === "set-cookie") {
       return;
     }
-    if (!HOP_BY_HOP.has(lower)) {
-      responseHeaders.set(key, value);
+    if (HOP_BY_HOP.has(lower) || STRIP_RESPONSE.has(lower)) {
+      return;
     }
+    responseHeaders.set(key, value);
   });
 
   const setCookies =
@@ -87,9 +95,6 @@ async function proxyRequest(req: NextRequest, pathSegments: string[]) {
     upstream.status === 204 || upstream.status === 205
       ? null
       : await upstream.arrayBuffer();
-
-  responseHeaders.delete("content-encoding");
-  responseHeaders.delete("content-length");
 
   return new NextResponse(body, {
     status: upstream.status,
