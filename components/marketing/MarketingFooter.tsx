@@ -11,6 +11,12 @@ import {
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons";
 import { EventPulseLogo } from "@/components/brand/EventPulseLogo";
+import {
+  APP_API_BASE,
+  BACKEND_PUBLIC_URL,
+  backendApiDocsUrl,
+  backendHealthUrl,
+} from "@/lib/constants/platform-urls";
 
 const SOCIAL = [
   {
@@ -118,7 +124,41 @@ export function MarketingFooter() {
             </ul>
           </div>
 
-          <div className="lg:col-span-4">
+          <div className="lg:col-span-2">
+            <p className="text-sm font-bold text-ink">Platform</p>
+            <ul className="mt-4 space-y-2.5 text-sm text-ink-muted">
+              <li>
+                <a
+                  href={backendHealthUrl()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary"
+                >
+                  API (Render)
+                </a>
+              </li>
+              <li>
+                <a
+                  href={backendApiDocsUrl()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary"
+                >
+                  API docs
+                </a>
+              </li>
+              <li>
+                <Link href={`${APP_API_BASE}/health`} className="hover:text-primary">
+                  App API (via site)
+                </Link>
+              </li>
+            </ul>
+            <p className="mt-3 break-all text-[11px] leading-snug text-ink-subtle">
+              Backend: {BACKEND_PUBLIC_URL}
+            </p>
+          </div>
+
+          <div className="lg:col-span-2">
             <p className="text-sm font-bold text-ink">Stay in the loop</p>
             <p className="mt-3 text-sm leading-relaxed text-ink-muted">
               Get early access to featured drops, festival guides, and product
