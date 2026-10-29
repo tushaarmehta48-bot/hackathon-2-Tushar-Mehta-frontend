@@ -88,6 +88,9 @@ async function proxyRequest(req: NextRequest, pathSegments: string[]) {
       ? null
       : await upstream.arrayBuffer();
 
+  responseHeaders.delete("content-encoding");
+  responseHeaders.delete("content-length");
+
   return new NextResponse(body, {
     status: upstream.status,
     statusText: upstream.statusText,
