@@ -19,7 +19,12 @@ const HOP_BY_HOP = new Set([
 
 /** Never forward these — avoids double-decode / ERR_CONTENT_DECODING_FAILED in browsers. */
 const STRIP_REQUEST = new Set(["accept-encoding"]);
-const STRIP_RESPONSE = new Set(["content-encoding", "content-length"]);
+const STRIP_RESPONSE = new Set([
+  "content-encoding",
+  "content-length",
+  "etag",
+  "vary",
+]);
 
 function rewriteSetCookie(value: string): string {
   return value
@@ -91,10 +96,33 @@ async function proxyRequest(req: NextRequest, pathSegments: string[]) {
     responseHeaders.append("set-cookie", rewriteSetCookie(cookie));
   }
 
-  const body =
-    upstream.status === 204 || upstream.status === 205
-      ? null
-      : await upstream.arrayBuffer();
+  responseHeaders.set(
+    "Cache-Control",
+    "private, no-store, no-transform, must-revalidate",
+  );
+
+  if (req.method === "HEAD") {
+    return new NextResponse(null, {
+      status: upstream.status,
+      statusText: upstream.statusText,
+      headers: responseHeaders,
+    });
+  }
+
+  const contentType = upstream.headers.get("content-type") ?? "";
+  let body: BodyInit | null = null;
+
+  if (upstream.status === 204 || upstream.status === 205) {
+    body = null;
+  } else if (
+    contentType.includes("application/json") ||
+    contentType.startsWith("text/")
+  ) {
+    // Decode upstream compression (if any) so the browser never sees a mismatched body.
+    body = await upstream.text();
+  } else {
+    body = await upstream.arrayBuffer();
+  }
 
   return new NextResponse(body, {
     status: upstream.status,
