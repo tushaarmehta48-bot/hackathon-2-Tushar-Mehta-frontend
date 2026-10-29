@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { CategoryPills } from "@/components/marketing/CategoryPills";
 import { HeroSection } from "@/components/marketing/HeroSection";
 import { HomeFAQ } from "@/components/marketing/HomeFAQ";
@@ -8,8 +7,6 @@ import { HomeOrganizerCta } from "@/components/marketing/HomeOrganizerCta";
 import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 import { PublicNav } from "@/components/marketing/PublicNav";
 import { SectionHeading } from "@/components/marketing/SectionHeading";
-import { LoadingState } from "@/components/ui/LoadingState";
-
 export default function Home() {
   return (
     <div className="flex min-h-full w-full max-w-full flex-1 flex-col overflow-x-clip">
@@ -32,9 +29,7 @@ export default function Home() {
         </div>
       </section>
 
-      <Suspense fallback={<LoadingState label="Loading events…" />}>
-        <HomeFeaturedEvents />
-      </Suspense>
+      <HomeFeaturedEvents />
 
       <HomeHowItWorks />
       <HomeFAQ />

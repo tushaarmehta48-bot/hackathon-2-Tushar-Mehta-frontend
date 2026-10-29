@@ -1,25 +1,56 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { ApiError } from "@/lib/api-client";
 import { listEvents } from "@/lib/api/events";
+import type { PublicEvent } from "@/lib/types/event";
 import { EventCard } from "@/components/events/EventCard";
 import { SectionHeading } from "@/components/marketing/SectionHeading";
 import { Button } from "@/components/ui/Button";
+import { LoadingState } from "@/components/ui/LoadingState";
 
-export async function HomeFeaturedEvents() {
-  let events: Awaited<ReturnType<typeof listEvents>>["events"] = [];
+export function HomeFeaturedEvents() {
+  const [events, setEvents] = useState<PublicEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [apiOffline, setApiOffline] = useState(false);
 
-  let apiOffline = false;
-  try {
-    ({ events } = await listEvents());
-  } catch (err) {
-    if (err instanceof ApiError && err.status === 0) {
-      apiOffline = true;
-    } else if (!(err instanceof ApiError)) {
-      throw err;
-    }
+  useEffect(() => {
+    let cancelled = false;
+    listEvents()
+      .then(({ events: list }) => {
+        if (!cancelled) {
+          setEvents(list.slice(0, 6));
+          setApiOffline(false);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setEvents([]);
+          setApiOffline(
+            err instanceof ApiError ? err.status === 0 : true,
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="bg-bg-milk py-16 md:py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <LoadingState label="Loading events…" />
+        </div>
+      </section>
+    );
   }
 
-  const featured = events.slice(0, 6);
+  const featured = events;
 
   return (
     <section className="bg-bg-milk py-16 md:py-24">
@@ -40,15 +71,12 @@ export async function HomeFeaturedEvents() {
         <div className="mt-12">
           {apiOffline ? (
             <p className="rounded-2xl border border-amber-500/30 bg-amber-500/10 px-5 py-4 text-sm text-ink shadow-soft">
-              API is offline. Run{" "}
-              <code className="rounded bg-white/60 px-1.5 py-0.5 text-xs">
-                npm run start:dev
-              </code>{" "}
-              in{" "}
-              <code className="rounded bg-white/60 px-1.5 py-0.5 text-xs">
-                backend/
-              </code>
-              , then refresh.
+              Events are temporarily unavailable. Wait a moment and refresh, or
+              open{" "}
+              <Link href="/events" className="font-semibold text-primary">
+                all events
+              </Link>
+              .
             </p>
           ) : featured.length === 0 ? (
             <p className="rounded-2xl border border-border bg-surface px-5 py-8 text-center text-ink-muted shadow-soft">
