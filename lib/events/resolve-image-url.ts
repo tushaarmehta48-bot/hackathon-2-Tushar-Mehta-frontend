@@ -1,3 +1,5 @@
+const BARE_BANNER_NAME = /^[a-f0-9-]+\.(jpe?g|png|webp|gif)$/i;
+
 /** Use same-origin media paths so Vercel rewrites can reach the API (and fix dev localhost URLs). */
 export function resolveEventImageUrl(url: string | undefined | null): string | null {
   const trimmed = url?.trim();
@@ -6,6 +8,9 @@ export function resolveEventImageUrl(url: string | undefined | null): string | n
   }
   if (trimmed.startsWith("/api/v1/media/")) {
     return trimmed;
+  }
+  if (BARE_BANNER_NAME.test(trimmed)) {
+    return `/api/v1/media/event-banners/${trimmed}`;
   }
   try {
     const parsed = new URL(trimmed);

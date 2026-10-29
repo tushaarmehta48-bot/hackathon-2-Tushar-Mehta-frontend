@@ -26,8 +26,13 @@ export function getEventCardImages(
 }
 
 export function isHostedEventPulseImage(url: string): boolean {
+  const trimmed = url.trim();
+  if (!trimmed) return false;
+  if (/^[a-f0-9-]+\.(jpe?g|png|webp|gif)$/i.test(trimmed)) {
+    return true;
+  }
   try {
-    const parsed = new URL(url.trim());
+    const parsed = new URL(trimmed, "http://localhost");
     const parts = parsed.pathname.split("/").filter(Boolean);
     const idx = parts.findIndex((p) => p === "event-banners");
     const name = idx >= 0 ? parts[idx + 1] : parts.at(-1);
