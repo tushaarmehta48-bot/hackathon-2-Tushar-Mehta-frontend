@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -28,12 +28,16 @@ export function EventCardImageCarousel({
   const router = useRouter();
   const [index, setIndex] = useState(0);
   const [failedUrls, setFailedUrls] = useState<Set<string>>(() => new Set());
-  const hasImages = images.length > 0;
-  const multiple = images.length > 1;
-  const safeIndex = hasImages ? index % images.length : 0;
-  const currentSrc = hasImages ? images[safeIndex] : "";
-  const showPhoto =
-    Boolean(currentSrc) && !failedUrls.has(currentSrc);
+
+  const availableImages = useMemo(
+    () => images.filter((u) => !failedUrls.has(u)),
+    [images, failedUrls],
+  );
+
+  const hasImages = availableImages.length > 0;
+  const multiple = availableImages.length > 1;
+  const safeIndex = hasImages ? index % availableImages.length : 0;
+  const currentSrc = hasImages ? availableImages[safeIndex]! : "";
   const icon = categoryIcon(category);
 
   const placeholder = (
@@ -55,16 +59,26 @@ export function EventCardImageCarousel({
     router.push(`/events/${eventId}`);
   }, [eventId, router]);
 
+  function markFailed(url: string) {
+    setFailedUrls((prev) => {
+      if (prev.has(url)) return prev;
+      const next = new Set(prev);
+      next.add(url);
+      return next;
+    });
+    setIndex(0);
+  }
+
   function prev(e: React.MouseEvent) {
     e.stopPropagation();
     e.preventDefault();
-    setIndex((i) => (i - 1 + images.length) % images.length);
+    setIndex((i) => (i - 1 + availableImages.length) % availableImages.length);
   }
 
   function next(e: React.MouseEvent) {
     e.stopPropagation();
     e.preventDefault();
-    setIndex((i) => (i + 1) % images.length);
+    setIndex((i) => (i + 1) % availableImages.length);
   }
 
   return (
@@ -81,7 +95,7 @@ export function EventCardImageCarousel({
       }}
       aria-label={`View ${title}`}
     >
-      {showPhoto ? (
+      {hasImages ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           key={currentSrc}
@@ -90,14 +104,7 @@ export function EventCardImageCarousel({
           className="absolute inset-0 h-full w-full object-cover object-center transition duration-500 ease-out group-hover:scale-[1.02]"
           loading="lazy"
           decoding="async"
-          onError={() => {
-            setFailedUrls((prev) => {
-              if (prev.has(currentSrc)) return prev;
-              const next = new Set(prev);
-              next.add(currentSrc);
-              return next;
-            });
-          }}
+          onError={() => markFailed(currentSrc)}
         />
       ) : (
         placeholder
@@ -122,7 +129,7 @@ export function EventCardImageCarousel({
             <FontAwesomeIcon icon={faChevronRight} className="h-3.5 w-3.5" />
           </button>
           <div className="absolute right-14 top-14 z-20 flex gap-1.5 sm:top-16">
-            {images.map((_, i) => (
+            {availableImages.map((_, i) => (
               <span
                 key={i}
                 className={[

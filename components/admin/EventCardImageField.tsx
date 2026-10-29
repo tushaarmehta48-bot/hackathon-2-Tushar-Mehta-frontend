@@ -10,6 +10,7 @@ import {
   adminUploadEventBanner,
 } from "@/lib/api/admin";
 import { isHostedEventPulseImage } from "@/lib/events/card-images";
+import { eventImageUseUnoptimized } from "@/lib/events/resolve-image-url";
 import { normalizeImageUploadFile } from "@/lib/images/normalize-upload-file";
 import { AdminImageCropDialog } from "@/components/admin/AdminImageCropDialog";
 import { Button } from "@/components/ui/Button";
@@ -210,7 +211,7 @@ export function EventCardImageField({
                   fill
                   className="object-cover object-center"
                   sizes="240px"
-                  unoptimized={url.startsWith("http://localhost")}
+                  unoptimized={eventImageUseUnoptimized(url)}
                 />
               </div>
             </li>

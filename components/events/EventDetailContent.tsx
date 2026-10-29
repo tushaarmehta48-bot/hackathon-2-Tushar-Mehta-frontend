@@ -15,7 +15,10 @@ import {
   categoryIcon,
   categoryLabel,
 } from "@/lib/events/category-art";
-import { getEventDetailHeroUrl } from "@/lib/events/card-images";
+import {
+  getEventCardImages,
+  getEventDetailHeroUrl,
+} from "@/lib/events/card-images";
 import { getSessionUser } from "@/lib/auth/session";
 import { UserRole } from "@/lib/types/user";
 import { EventHeroImage } from "@/components/events/EventHeroImage";
@@ -65,7 +68,11 @@ export async function EventDetailContent({ params }: EventDetailContentProps) {
       <section className="relative overflow-hidden border-b border-border/80">
         <div className="relative min-h-[280px] w-full sm:min-h-[320px] md:min-h-[360px]">
           {heroImage ? (
-            <EventHeroImage src={heroImage} category={event.category} />
+            <EventHeroImage
+              src={heroImage}
+              fallbackSrcs={getEventCardImages(event)}
+              category={event.category}
+            />
           ) : (
             <div
               className={[

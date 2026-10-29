@@ -10,6 +10,7 @@ import {
   adminUploadEventBanner,
 } from "@/lib/api/admin";
 import { isHostedEventPulseImage } from "@/lib/events/card-images";
+import { eventImageUseUnoptimized } from "@/lib/events/resolve-image-url";
 import { normalizeImageUploadFile } from "@/lib/images/normalize-upload-file";
 import { AdminImageCropDialog } from "@/components/admin/AdminImageCropDialog";
 import { Button } from "@/components/ui/Button";
@@ -114,7 +115,7 @@ export function EventDetailHeroField({
               fill
               className="object-cover object-center"
               sizes="(max-width:768px) 100vw, 640px"
-              unoptimized={heroImageUrl.startsWith("http://localhost")}
+              unoptimized={eventImageUseUnoptimized(heroImageUrl)}
             />
           </div>
         </div>

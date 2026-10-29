@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   categoryGradient,
@@ -9,14 +9,26 @@ import {
 
 type EventHeroImageProps = {
   src: string;
+  fallbackSrcs?: string[];
   category: string;
 };
 
-export function EventHeroImage({ src, category }: EventHeroImageProps) {
-  const [failed, setFailed] = useState(false);
+export function EventHeroImage({
+  src,
+  fallbackSrcs = [],
+  category,
+}: EventHeroImageProps) {
+  const [failedUrls, setFailedUrls] = useState<Set<string>>(() => new Set());
   const icon = categoryIcon(category);
 
-  if (failed) {
+  const candidates = useMemo(() => {
+    const list = [src, ...fallbackSrcs].filter(Boolean);
+    return [...new Set(list)];
+  }, [src, fallbackSrcs]);
+
+  const activeSrc = candidates.find((u) => !failedUrls.has(u));
+
+  if (!activeSrc) {
     return (
       <div
         className={[
@@ -35,10 +47,18 @@ export function EventHeroImage({ src, category }: EventHeroImageProps) {
     <>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={src}
+        key={activeSrc}
+        src={activeSrc}
         alt=""
         className="absolute inset-0 h-full w-full object-cover object-center"
-        onError={() => setFailed(true)}
+        onError={() => {
+          setFailedUrls((prev) => {
+            if (prev.has(activeSrc)) return prev;
+            const next = new Set(prev);
+            next.add(activeSrc);
+            return next;
+          });
+        }}
       />
       <div className="absolute inset-0 bg-ink/45" />
     </>

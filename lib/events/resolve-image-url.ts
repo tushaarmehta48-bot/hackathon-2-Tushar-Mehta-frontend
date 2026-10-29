@@ -24,3 +24,13 @@ export function resolveEventImageUrls(urls: string[]): string[] {
     .map((u) => resolveEventImageUrl(u))
     .filter((u): u is string => Boolean(u));
 }
+
+/** Next.js Image cannot optimize same-origin API media paths. */
+export function eventImageUseUnoptimized(url: string): boolean {
+  const trimmed = url.trim();
+  return (
+    trimmed.startsWith("/api/v1/media/") ||
+    trimmed.startsWith("http://localhost") ||
+    trimmed.startsWith("http://127.0.0.1")
+  );
+}
