@@ -1,0 +1,84 @@
+import { API_UNREACHABLE_MESSAGE } from "@/lib/api/messages";
+
+const defaultBase =
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api/v1";
+
+export class ApiError extends Error {
+  readonly status: number;
+  readonly body: unknown;
+
+  constructor(status: number, message: string, body?: unknown) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+    this.body = body;
+  }
+}
+
+function resolveUrl(path: string, baseUrl: string): string {
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
+  }
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  return `${baseUrl.replace(/\/$/, "")}${normalized}`;
+}
+
+export type ApiClientOptions = Omit<RequestInit, "body"> & {
+  baseUrl?: string;
+  body?: unknown;
+  json?: boolean;
+};
+
+export async function apiClient<T>(
+  path: string,
+  options: ApiClientOptions = {},
+): Promise<T> {
+  const { baseUrl = defaultBase, body, json = true, headers, ...init } =
+    options;
+
+  let res: Response;
+  try {
+    res = await fetch(resolveUrl(path, baseUrl), {
+      ...init,
+      credentials: "include",
+      headers: {
+        ...(json && body !== undefined
+          ? { "Content-Type": "application/json" }
+          : {}),
+        ...headers,
+      },
+      body:
+        body === undefined
+          ? undefined
+          : json
+            ? JSON.stringify(body)
+            : (body as BodyInit),
+    });
+  } catch {
+    throw new ApiError(0, API_UNREACHABLE_MESSAGE);
+  }
+
+  const contentType = res.headers.get("content-type") ?? "";
+  const payload = contentType.includes("application/json")
+    ? await res.json().catch(() => null)
+    : await res.text().catch(() => null);
+
+  if (!res.ok) {
+    let message = res.statusText || "Request failed";
+    if (payload && typeof payload === "object" && "message" in payload) {
+      const raw = (payload as { message: unknown }).message;
+      if (typeof raw === "string") {
+        message = raw;
+      } else if (Array.isArray(raw)) {
+        message = raw.filter((m): m is string => typeof m === "string").join(" · ");
+      }
+    }
+    throw new ApiError(res.status, message, payload);
+  }
+
+  return payload as T;
+}
+
+export function getApiBaseUrl(): string {
+  return defaultBase;
+}
