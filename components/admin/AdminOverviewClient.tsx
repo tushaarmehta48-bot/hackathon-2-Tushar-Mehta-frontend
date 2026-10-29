@@ -110,12 +110,7 @@ export function AdminOverviewClient({ events, rows }: AdminOverviewClientProps) 
               fill
               className="object-cover"
               sizes="400px"
-              unoptimized={
-                getEventCardImages(selectedEvent)[0]!.startsWith("/api/v1/") ||
-                getEventCardImages(selectedEvent)[0]!.startsWith(
-                  "http://localhost",
-                )
-              }
+              unoptimized={true}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-ink/75 via-transparent to-transparent" />
             <p className="absolute bottom-3 left-3 right-3 font-display text-lg text-white drop-shadow-sm">

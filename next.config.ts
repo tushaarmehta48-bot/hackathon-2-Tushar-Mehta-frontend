@@ -4,6 +4,7 @@ const isProd = process.env.NODE_ENV === "production";
 
 const nextConfig: NextConfig = {
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
@@ -13,19 +14,29 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "hackathon-2-tushar-mehta-backend.onrender.com",
-        pathname: "/api/v1/media/**",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "hackathon-2-tushar-mehta-frontend.vercel.app",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "*.vercel.app",
+        pathname: "/**",
       },
       {
         protocol: "http",
         hostname: "localhost",
         port: "3001",
-        pathname: "/api/v1/media/**",
+        pathname: "/**",
       },
       {
         protocol: "http",
         hostname: "127.0.0.1",
         port: "3001",
-        pathname: "/api/v1/media/**",
+        pathname: "/**",
       },
     ],
   },

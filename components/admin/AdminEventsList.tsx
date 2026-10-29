@@ -35,10 +35,7 @@ export function AdminEventsList({ events }: AdminEventsListProps) {
                         fill
                         className="object-cover"
                         sizes="160px"
-                        unoptimized={
-                          cover.startsWith("/api/v1/") ||
-                          cover.startsWith("http://localhost")
-                        }
+                        unoptimized={true}
                       />
                       {thumbs.length > 1 ? (
                         <span className="absolute bottom-2 right-2 rounded-full bg-ink/75 px-2 py-0.5 text-[10px] font-bold text-white">
