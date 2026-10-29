@@ -1,10 +1,7 @@
 import Link from "next/link";
-import { Suspense } from "react";
 import { AttendeeLoginSection } from "@/components/auth/AttendeeLoginSection";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { AUTH_IMAGES } from "@/lib/constants/auth-images";
-import { LoadingState } from "@/components/ui/LoadingState";
-
 type AttendeeLoginPageContentProps = {
   searchParams: Promise<{ registered?: string; returnTo?: string; email?: string }>;
 };
@@ -40,9 +37,7 @@ export async function AttendeeLoginPageContent({
         </>
       }
     >
-      <Suspense fallback={<LoadingState label="Loading sign in…" />}>
-        <AttendeeLoginSection returnTo={returnTo} />
-      </Suspense>
+      <AttendeeLoginSection returnTo={returnTo} />
     </AuthShell>
   );
 }

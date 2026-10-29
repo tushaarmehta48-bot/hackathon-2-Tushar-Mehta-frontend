@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { cache } from "react";
-import { getApiBaseUrl } from "@/lib/api-client";
+import { getServerSideApiBaseUrl } from "@/lib/api/base-url";
+import { fetchWithTimeout } from "@/lib/api/fetch-with-timeout";
 import type { SafeUser } from "@/lib/types/user";
 
 async function cookieHeader(): Promise<string | undefined> {
@@ -19,14 +20,17 @@ export const getSessionUser = cache(async (): Promise<SafeUser | null> => {
   }
 
   try {
-    const res = await fetch(`${getApiBaseUrl()}/users/me`, {
-      headers: { Cookie: header },
-      cache: "no-store",
-    });
+    const res = await fetchWithTimeout(
+      `${getServerSideApiBaseUrl()}/auth/session`,
+      {
+        headers: { Cookie: header },
+        cache: "no-store",
+      },
+    );
     if (!res.ok) {
       return null;
     }
-    const data = (await res.json()) as { user?: SafeUser };
+    const data = (await res.json()) as { user?: SafeUser | null };
     return data.user ?? null;
   } catch {
     return null;

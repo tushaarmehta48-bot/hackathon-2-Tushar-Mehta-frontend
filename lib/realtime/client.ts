@@ -1,9 +1,16 @@
 import { io, type Socket } from "socket.io-client";
+import { getApiBaseUrl, getDefaultDevApiBaseUrl } from "@/lib/api/base-url";
 
 export function getRealtimeOrigin(): string {
-  const api =
-    process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api/v1";
-  return api.replace(/\/api\/v1\/?$/, "");
+  const direct = process.env.NEXT_PUBLIC_REALTIME_ORIGIN?.trim();
+  if (direct) {
+    return direct.replace(/\/$/, "");
+  }
+  const api = getApiBaseUrl();
+  if (api.startsWith("http://") || api.startsWith("https://")) {
+    return api.replace(/\/api\/v1\/?$/, "");
+  }
+  return getDefaultDevApiBaseUrl().replace(/\/api\/v1\/?$/, "");
 }
 
 export function createRealtimeSocket(): Socket {

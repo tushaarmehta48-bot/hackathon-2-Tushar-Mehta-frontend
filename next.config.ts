@@ -2,13 +2,30 @@ import type { NextConfig } from "next";
 
 const isProd = process.env.NODE_ENV === "production";
 
+const apiOrigin =
+  process.env.API_URL?.replace(/\/$/, "") ??
+  "https://hackathon-2-tushar-mehta-backend.onrender.com";
+
 const nextConfig: NextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: "/api/v1/:path*",
+        destination: `${apiOrigin}/api/v1/:path*`,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
         protocol: "https",
         hostname: "images.unsplash.com",
         pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "hackathon-2-tushar-mehta-backend.onrender.com",
+        pathname: "/api/v1/media/**",
       },
       {
         protocol: "http",

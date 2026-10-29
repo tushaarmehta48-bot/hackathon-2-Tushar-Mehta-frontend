@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
-import { ApiError, getApiBaseUrl } from "@/lib/api-client";
+import { ApiError } from "@/lib/api-client";
+import { getServerSideApiBaseUrl } from "@/lib/api/base-url";
 import { API_UNREACHABLE_MESSAGE } from "@/lib/api/messages";
 
 async function sessionCookieHeader(): Promise<string | undefined> {
@@ -20,7 +21,7 @@ export async function serverApiClient<T>(
 
   let res: Response;
   try {
-    res = await fetch(`${getApiBaseUrl()}${normalized}`, {
+    res = await fetch(`${getServerSideApiBaseUrl()}${normalized}`, {
       ...init,
       cache: "no-store",
       headers: {

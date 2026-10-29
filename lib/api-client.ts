@@ -1,7 +1,7 @@
+import { resolveApiBaseUrlForFetch } from "@/lib/api/base-url";
 import { API_UNREACHABLE_MESSAGE } from "@/lib/api/messages";
 
-const defaultBase =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api/v1";
+export { getApiBaseUrl, getServerSideApiBaseUrl } from "@/lib/api/base-url";
 
 export class ApiError extends Error {
   readonly status: number;
@@ -33,7 +33,7 @@ export async function apiClient<T>(
   path: string,
   options: ApiClientOptions = {},
 ): Promise<T> {
-  const { baseUrl = defaultBase, body, json = true, headers, ...init } =
+  const { baseUrl = resolveApiBaseUrlForFetch(), body, json = true, headers, ...init } =
     options;
 
   let res: Response;
@@ -77,8 +77,4 @@ export async function apiClient<T>(
   }
 
   return payload as T;
-}
-
-export function getApiBaseUrl(): string {
-  return defaultBase;
 }
