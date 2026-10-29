@@ -27,10 +27,29 @@ export function EventCardImageCarousel({
 }: EventCardImageCarouselProps) {
   const router = useRouter();
   const [index, setIndex] = useState(0);
+  const [failedUrls, setFailedUrls] = useState<Set<string>>(() => new Set());
   const hasImages = images.length > 0;
   const multiple = images.length > 1;
   const safeIndex = hasImages ? index % images.length : 0;
+  const currentSrc = hasImages ? images[safeIndex] : "";
+  const showPhoto =
+    Boolean(currentSrc) && !failedUrls.has(currentSrc);
   const icon = categoryIcon(category);
+
+  const placeholder = (
+    <div
+      className={[
+        "absolute inset-0 bg-gradient-to-br",
+        categoryGradient(category),
+      ].join(" ")}
+    >
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="flex h-20 w-20 items-center justify-center rounded-full border border-white/25 bg-white/10 text-3xl text-white/90 backdrop-blur-sm sm:h-24 sm:w-24">
+          <FontAwesomeIcon icon={icon} className="h-9 w-9 sm:h-10 sm:w-10" />
+        </span>
+      </div>
+    </div>
+  );
 
   const goDetail = useCallback(() => {
     router.push(`/events/${eventId}`);
@@ -62,29 +81,26 @@ export function EventCardImageCarousel({
       }}
       aria-label={`View ${title}`}
     >
-      {hasImages ? (
+      {showPhoto ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          key={images[safeIndex]}
-          src={images[safeIndex]}
+          key={currentSrc}
+          src={currentSrc}
           alt=""
           className="absolute inset-0 h-full w-full object-cover object-center transition duration-500 ease-out group-hover:scale-[1.02]"
           loading="lazy"
           decoding="async"
+          onError={() => {
+            setFailedUrls((prev) => {
+              if (prev.has(currentSrc)) return prev;
+              const next = new Set(prev);
+              next.add(currentSrc);
+              return next;
+            });
+          }}
         />
       ) : (
-        <div
-          className={[
-            "absolute inset-0 bg-gradient-to-br",
-            categoryGradient(category),
-          ].join(" ")}
-        >
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="flex h-20 w-20 items-center justify-center rounded-full border border-white/25 bg-white/10 text-3xl text-white/90 backdrop-blur-sm sm:h-24 sm:w-24">
-              <FontAwesomeIcon icon={icon} className="h-9 w-9 sm:h-10 sm:w-10" />
-            </span>
-          </div>
-        </div>
+        placeholder
       )}
 
       {multiple ? (

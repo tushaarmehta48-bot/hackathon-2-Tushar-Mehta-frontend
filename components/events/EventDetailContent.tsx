@@ -18,6 +18,7 @@ import {
 import { getEventDetailHeroUrl } from "@/lib/events/card-images";
 import { getSessionUser } from "@/lib/auth/session";
 import { UserRole } from "@/lib/types/user";
+import { EventHeroImage } from "@/components/events/EventHeroImage";
 import { EventStatusBadge } from "@/components/events/EventStatusBadge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -64,15 +65,7 @@ export async function EventDetailContent({ params }: EventDetailContentProps) {
       <section className="relative overflow-hidden border-b border-border/80">
         <div className="relative min-h-[280px] w-full sm:min-h-[320px] md:min-h-[360px]">
           {heroImage ? (
-            <>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={heroImage}
-                alt=""
-                className="absolute inset-0 h-full w-full object-cover object-center"
-              />
-              <div className="absolute inset-0 bg-ink/45" />
-            </>
+            <EventHeroImage src={heroImage} category={event.category} />
           ) : (
             <div
               className={[
