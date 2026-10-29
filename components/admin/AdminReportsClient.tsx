@@ -7,6 +7,7 @@ import {
   faCircleCheck,
   faTicket,
   faUserCheck,
+  faUserShield,
   faWallet,
 } from "@fortawesome/free-solid-svg-icons";
 import { adminListCheckIns } from "@/lib/api/admin";
@@ -183,12 +184,21 @@ export function AdminReportsClient({
                   <FontAwesomeIcon icon={faCircleCheck} />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold capitalize text-ink">
-                    {entry.result.replace("_", " ")}
-                  </p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="text-sm font-semibold capitalize text-ink">
+                      {entry.result.replace("_", " ")}
+                    </p>
+                    {entry.gatekeeperName ? (
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                        <FontAwesomeIcon icon={faUserShield} className="h-3 w-3" />
+                        Gatekeeper: {entry.gatekeeperName}
+                      </span>
+                    ) : null}
+                  </div>
                   <p className="text-xs text-ink-muted">
                     {new Date(entry.timestamp).toLocaleString()}
                     {entry.ticketCode ? ` · ${entry.ticketCode}` : ""}
+                    {entry.gateId ? ` · Gate: ${entry.gateId}` : ""}
                   </p>
                 </div>
                 {entry.bookingReference ? (

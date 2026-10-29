@@ -38,6 +38,7 @@ export type CheckInReportRow = {
   id: string;
   eventId: string;
   gatekeeperId: string;
+  gatekeeperName?: string | null;
   gateId?: string | null;
   result: string;
   timestamp: string;
