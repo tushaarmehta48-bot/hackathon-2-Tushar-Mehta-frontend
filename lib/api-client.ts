@@ -1,5 +1,8 @@
 import { resolveApiBaseUrlForFetch } from "@/lib/api/base-url";
-import { API_UNREACHABLE_MESSAGE } from "@/lib/api/messages";
+import {
+  API_LOCAL_DEV_HINT,
+  API_UNREACHABLE_MESSAGE,
+} from "@/lib/api/messages";
 
 export { getApiBaseUrl, getServerSideApiBaseUrl } from "@/lib/api/base-url";
 
@@ -55,7 +58,14 @@ export async function apiClient<T>(
             : (body as BodyInit),
     });
   } catch {
-    throw new ApiError(0, API_UNREACHABLE_MESSAGE);
+    const onLocalDev =
+      typeof window !== "undefined" &&
+      (window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1");
+    throw new ApiError(
+      0,
+      onLocalDev ? API_LOCAL_DEV_HINT : API_UNREACHABLE_MESSAGE,
+    );
   }
 
   const contentType = res.headers.get("content-type") ?? "";
