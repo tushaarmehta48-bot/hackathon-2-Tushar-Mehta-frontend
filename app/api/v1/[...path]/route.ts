@@ -83,7 +83,12 @@ async function proxyRequest(req: NextRequest, pathSegments: string[]) {
     responseHeaders.append("set-cookie", rewriteSetCookie(cookie));
   }
 
-  return new NextResponse(upstream.body, {
+  const body =
+    upstream.status === 204 || upstream.status === 205
+      ? null
+      : await upstream.arrayBuffer();
+
+  return new NextResponse(body, {
     status: upstream.status,
     statusText: upstream.statusText,
     headers: responseHeaders,
