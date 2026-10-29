@@ -188,7 +188,7 @@ export function AdminOverviewInsights({
                   >
                     {ev.title}
                   </Link>
-                  <p className="mt-0.5 text-xs text-ink-muted">
+                  <p className="mt-0.5 text-xs text-ink-muted" suppressHydrationWarning>
                     {formatEventRange(ev.startAt, ev.endAt, ev.timezone)}
                   </p>
                   <p className="text-xs capitalize text-ink-subtle">

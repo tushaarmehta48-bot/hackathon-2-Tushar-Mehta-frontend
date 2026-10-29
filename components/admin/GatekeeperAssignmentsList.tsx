@@ -54,7 +54,7 @@ export function GatekeeperAssignmentsList({
                           </span>
                         ) : null}
                       </p>
-                      <p className="text-sm text-ink-muted">
+                      <p className="text-sm text-ink-muted" suppressHydrationWarning>
                         {formatEventRange(ev.startAt, ev.endAt, ev.timezone)}
                         {ev.venue ? ` · ${ev.venue}` : ""}
                       </p>

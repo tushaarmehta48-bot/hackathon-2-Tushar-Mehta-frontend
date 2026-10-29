@@ -195,8 +195,10 @@ export function AdminReportsClient({
                       </span>
                     ) : null}
                   </div>
-                  <p className="text-xs text-ink-muted">
-                    {new Date(entry.timestamp).toLocaleString()}
+                  <p className="text-xs text-ink-muted" suppressHydrationWarning>
+                    <span suppressHydrationWarning>
+                      {new Date(entry.timestamp).toLocaleString()}
+                    </span>
                     {entry.ticketCode ? ` · ${entry.ticketCode}` : ""}
                     {entry.gateId ? ` · Gate: ${entry.gateId}` : ""}
                   </p>

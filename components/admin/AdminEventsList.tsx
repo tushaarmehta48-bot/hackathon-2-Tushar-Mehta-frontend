@@ -54,7 +54,7 @@ export function AdminEventsList({ events }: AdminEventsListProps) {
                   <div className="flex flex-1 flex-wrap justify-between gap-2 px-1 pb-1 sm:py-2">
                     <div>
                       <p className="font-semibold">{event.title}</p>
-                      <p className="text-sm text-ink-muted">
+                      <p className="text-sm text-ink-muted" suppressHydrationWarning>
                         {formatEventRange(
                           event.startAt,
                           event.endAt,

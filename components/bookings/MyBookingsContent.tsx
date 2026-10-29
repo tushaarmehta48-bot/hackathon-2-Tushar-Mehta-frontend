@@ -68,9 +68,11 @@ export async function MyBookingsContent() {
                       <p className="font-mono text-sm font-semibold text-ink">
                         {booking.reference}
                       </p>
-                      <p className="text-sm capitalize text-ink-muted">
+                      <p className="text-sm capitalize text-ink-muted" suppressHydrationWarning>
                         {booking.status} ·{" "}
-                        {new Date(booking.createdAt).toLocaleString()}
+                        <span suppressHydrationWarning>
+                          {new Date(booking.createdAt).toLocaleString()}
+                        </span>
                       </p>
                     </div>
                     <p className="font-display text-lg font-semibold text-primary">

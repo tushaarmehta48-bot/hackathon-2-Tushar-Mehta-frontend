@@ -82,7 +82,7 @@ export async function StaffDashboardContent() {
                     {assignment.event?.title ?? "Event"}
                   </p>
                   {assignment.event ? (
-                    <p className="text-sm text-ink-muted">
+                    <p className="text-sm text-ink-muted" suppressHydrationWarning>
                       {assignment.event.venue} ·{" "}
                       {formatEventRange(
                         assignment.event.startAt,

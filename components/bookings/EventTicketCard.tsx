@@ -77,7 +77,7 @@ export function EventTicketCard({
         </div>
 
         <ul className="relative mt-4 space-y-2 text-sm text-white/85">
-          <li className="flex items-start gap-2">
+          <li className="flex items-start gap-2" suppressHydrationWarning>
             <FontAwesomeIcon icon={faCalendarDays} className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent-gold" />
             {formatEventRange(event.startAt, event.endAt, event.timezone)}
           </li>
