@@ -14,7 +14,7 @@ import {
   faQrcode,
   faTicket,
 } from "@fortawesome/free-solid-svg-icons";
-import { logout } from "@/lib/auth/api";
+import { signOutAndSync } from "@/lib/auth/sign-out-client";
 import { getUserInitials } from "@/lib/user-initials";
 import type { SafeUser } from "@/lib/types/user";
 import { UserRole } from "@/lib/types/user";
@@ -105,13 +105,11 @@ export function NavProfileHoverMenu({
 
   async function onSignOut() {
     setSigningOut(true);
+    setOpen(false);
     try {
-      await logout();
-    } catch {
-      /* session may already be gone */
+      await signOutAndSync();
     } finally {
       onNavigate?.();
-      router.push("/");
       router.refresh();
       setSigningOut(false);
     }

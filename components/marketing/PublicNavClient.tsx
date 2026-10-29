@@ -7,7 +7,7 @@ import { fetchOptionalSessionUser } from "@/lib/api/session";
 import type { SafeUser } from "@/lib/types/user";
 import { NavProfileHoverMenu } from "@/components/marketing/NavProfileHoverMenu";
 import { getUserInitials } from "@/lib/user-initials";
-import { logout } from "@/lib/auth/api";
+import { SESSION_SYNC_EVENT, signOutAndSync } from "@/lib/auth/sign-out-client";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -198,6 +198,19 @@ export function PublicNavClient({ variant = "default" }: PublicNavClientProps) {
     };
   }, [pathname]);
 
+  useEffect(() => {
+    function onSessionSync(event: Event) {
+      const detail = (event as CustomEvent<{ user: SafeUser | null }>).detail;
+      if (detail && "user" in detail) {
+        setUser(detail.user);
+        return;
+      }
+      setUser(null);
+    }
+    window.addEventListener(SESSION_SYNC_EVENT, onSessionSync);
+    return () => window.removeEventListener(SESSION_SYNC_EVENT, onSessionSync);
+  }, []);
+
   const shellClass = [
     "mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2.5 sm:px-5 sm:py-3",
     "rounded-[2rem] border shadow-soft backdrop-blur-xl",
@@ -331,9 +344,8 @@ export function PublicNavClient({ variant = "default" }: PublicNavClientProps) {
                     variant="ghost"
                     className="mt-2 w-full"
                     onClick={() => {
-                      void logout().finally(() => {
-                        setMobileOpen(false);
-                        router.push("/");
+                      setMobileOpen(false);
+                      void signOutAndSync().finally(() => {
                         router.refresh();
                       });
                     }}

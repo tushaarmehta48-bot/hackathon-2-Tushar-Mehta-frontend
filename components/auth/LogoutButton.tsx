@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { logout } from "@/lib/auth/api";
+import { signOutAndSync } from "@/lib/auth/sign-out-client";
 import { Button } from "@/components/ui/Button";
 
 type LogoutButtonProps = {
@@ -22,9 +22,7 @@ export function LogoutButton({
   async function onLogout() {
     setLoading(true);
     try {
-      await logout();
-    } catch {
-      /* session may already be gone */
+      await signOutAndSync();
     } finally {
       router.push(redirectTo);
       router.refresh();
