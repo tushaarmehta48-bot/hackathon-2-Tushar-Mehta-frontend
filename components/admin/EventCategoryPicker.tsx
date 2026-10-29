@@ -10,8 +10,8 @@ type EventCategoryPickerProps = {
 };
 
 export function EventCategoryPicker({ value, onChange }: EventCategoryPickerProps) {
-  const knownIds = new Set(EVENT_CATEGORIES.map((c) => c.id));
-  const legacy = value && !knownIds.has(value);
+  const knownIds = new Set<string>(EVENT_CATEGORIES.map((c) => c.id));
+  const legacy = Boolean(value && !knownIds.has(value));
 
   return (
     <div className="space-y-3">

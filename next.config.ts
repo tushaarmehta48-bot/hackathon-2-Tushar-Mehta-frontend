@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+const isProd = process.env.NODE_ENV === "production";
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -25,8 +27,9 @@ const nextConfig: NextConfig = {
   experimental: {
     agentFeedback: true,
   },
-  cacheComponents: true,
-  partialPrefetching: true,
+  // Heavy on RAM during `next dev`; keep on for production builds.
+  cacheComponents: isProd,
+  partialPrefetching: isProd,
   turbopack: {
     rules: {
       "*.css": {
