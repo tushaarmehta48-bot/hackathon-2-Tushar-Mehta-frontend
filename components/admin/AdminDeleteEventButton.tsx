@@ -27,7 +27,7 @@ export function AdminDeleteEventButton({
 
   async function onDelete() {
     const ok = window.confirm(
-      `Delete “${eventTitle}”?\n\nThis cannot be undone. Events with bookings cannot be deleted.`,
+      `Delete “${eventTitle}”?\n\nThis will permanently delete this event, along with all associated packages, tickets, and bookings. This action cannot be undone.`,
     );
     if (!ok) return;
 
