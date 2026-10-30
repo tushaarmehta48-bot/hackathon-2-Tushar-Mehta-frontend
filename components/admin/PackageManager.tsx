@@ -35,11 +35,15 @@ export function PackageManager({ eventId, packages }: PackageManagerProps) {
       .map(draftToCreateBody)
       .filter((b): b is NonNullable<typeof b> => b !== null);
     if (bodies.length === 0) {
-      setError("Add at least one package with a name and valid price in rupees.");
+      const msg = "Add at least one package with a name and valid price in rupees.";
+      setError(msg);
+      window.alert(msg);
       return;
     }
     if (bodies.length !== drafts.length) {
-      setError("Fix invalid rows — each package needs a name, price (₹), and quantity.");
+      const msg = "Fix invalid rows — each package needs a name, price (₹), and quantity.";
+      setError(msg);
+      window.alert(msg);
       return;
     }
 
@@ -49,9 +53,16 @@ export function PackageManager({ eventId, packages }: PackageManagerProps) {
         await adminCreatePackage(eventId, body);
       }
       setDrafts([newPackageDraft()]);
+      const successMsg =
+        bodies.length > 1
+          ? "All ticket packages created successfully!"
+          : "Ticket package created successfully!";
+      window.alert(successMsg);
       router.refresh();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Could not add packages.");
+      const msg = err instanceof ApiError ? err.message : "Could not add packages.";
+      setError(msg);
+      window.alert(`Error: ${msg}`);
     } finally {
       setLoading(false);
     }
@@ -61,9 +72,15 @@ export function PackageManager({ eventId, packages }: PackageManagerProps) {
     setError(null);
     try {
       await adminUpdatePackage(pkg.id, { active: !pkg.active });
+      const msg = pkg.active
+        ? `Package "${pkg.name}" is now inactive.`
+        : `Package "${pkg.name}" is now active and on sale!`;
+      window.alert(msg);
       router.refresh();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Update failed.");
+      const msg = err instanceof ApiError ? err.message : "Update failed.";
+      setError(msg);
+      window.alert(`Error: ${msg}`);
     }
   }
 

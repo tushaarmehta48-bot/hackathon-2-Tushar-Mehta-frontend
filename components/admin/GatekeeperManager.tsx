@@ -50,9 +50,12 @@ export function GatekeeperManager({
     try {
       await adminCreateGatekeeper(createForm);
       setCreateForm({ name: "", email: "", password: "" });
+      window.alert("Gatekeeper account created successfully!");
       router.refresh();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Create failed.");
+      const msg = err instanceof ApiError ? err.message : "Create failed.";
+      setError(msg);
+      window.alert(`Error: ${msg}`);
     } finally {
       setLoading(null);
     }
@@ -65,11 +68,14 @@ export function GatekeeperManager({
     try {
       await adminAssignGatekeeper(assignForm.gatekeeperId, {
         eventId: assignForm.eventId,
-        gateId: assignForm.gateId || undefined,
+        gateId: assignForm.gateId.trim() || undefined,
       });
+      window.alert("Gatekeeper assigned to event successfully!");
       router.refresh();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Assignment failed.");
+      const msg = err instanceof ApiError ? err.message : "Assignment failed.";
+      setError(msg);
+      window.alert(`Error: ${msg}`);
     } finally {
       setLoading(null);
     }

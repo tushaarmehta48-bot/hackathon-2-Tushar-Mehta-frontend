@@ -37,9 +37,12 @@ export function AdminResetGatekeeperPasswordButton({
     try {
       await adminResetGatekeeperPassword(gatekeeperId, password);
       close();
+      window.alert(`Password for ${gatekeeperName} has been reset successfully!`);
       router.refresh();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Reset failed.");
+      const msg = err instanceof ApiError ? err.message : "Reset failed.";
+      setError(msg);
+      window.alert(`Error: ${msg}`);
     } finally {
       setLoading(false);
     }

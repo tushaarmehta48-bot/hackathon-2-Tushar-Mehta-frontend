@@ -131,6 +131,13 @@ export async function adminAssignGatekeeper(
   );
 }
 
+export async function adminDeleteGatekeeperAssignment(assignmentId: string) {
+  return apiClient<{ ok: boolean }>(
+    `/admin/gatekeepers/assignments/${assignmentId}`,
+    { method: "DELETE" },
+  );
+}
+
 export async function adminResetGatekeeperPassword(
   gatekeeperId: string,
   password: string,

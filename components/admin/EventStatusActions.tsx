@@ -39,9 +39,12 @@ export function EventStatusActions({ eventId, status }: EventStatusActionsProps)
     setLoading(next);
     try {
       await adminUpdateEventStatus(eventId, next);
+      window.alert(`Event status updated to "${next.replace("_", " ")}" successfully!`);
       router.refresh();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Status update failed.");
+      const msg = err instanceof ApiError ? err.message : "Status update failed.";
+      setError(msg);
+      window.alert(`Error: ${msg}`);
     } finally {
       setLoading(null);
     }

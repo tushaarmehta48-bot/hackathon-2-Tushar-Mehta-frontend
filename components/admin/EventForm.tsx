@@ -114,37 +114,40 @@ export function EventForm({ mode, event }: EventFormProps) {
           namedDrafts.length > 0 &&
           packageBodies.length !== namedDrafts.length
         ) {
-          setError(
-            "Fix ticket packages — each needs a name, price in ₹, and quantity.",
-          );
+          const validationMsg =
+            "Fix ticket packages — each needs a name, price in ₹, and quantity.";
+          setError(validationMsg);
+          window.alert(validationMsg);
           setLoading(false);
           return;
         }
         for (const body of packageBodies) {
           await adminCreatePackage(created.id, body);
         }
+        window.alert("Event draft created successfully!");
         router.push(`/admin/events/${created.id}`);
       } else if (event) {
         await adminUpdateEvent(event.id, {
           ...form,
           listingBadge: formValueToListingBadge(listingBadgeUi),
         });
+        window.alert("Changes saved successfully!");
         router.refresh();
       }
     } catch (err) {
+      let detail = "Save failed.";
       if (err instanceof ApiError) {
         const body = err.body;
-        const detail =
+        detail =
           body &&
           typeof body === "object" &&
           "message" in body &&
           Array.isArray((body as { message: unknown }).message)
             ? (body as { message: string[] }).message.join(" · ")
             : err.message;
-        setError(detail);
-      } else {
-        setError("Save failed.");
       }
+      setError(detail);
+      window.alert(`Error: ${detail}`);
     } finally {
       setLoading(false);
     }

@@ -35,10 +35,13 @@ export function AdminDeleteEventButton({
     setError(null);
     try {
       await adminDeleteEvent(eventId);
+      window.alert(`Event “${eventTitle}” deleted successfully.`);
       router.push(redirectTo);
       router.refresh();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Delete failed.");
+      const msg = err instanceof ApiError ? err.message : "Delete failed.";
+      setError(msg);
+      window.alert(`Error: ${msg}`);
     } finally {
       setLoading(false);
     }
