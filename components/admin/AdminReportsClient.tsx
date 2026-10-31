@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowTrendUp,
   faCircleCheck,
+  faFileExcel,
   faTicket,
   faUserCheck,
   faUserShield,
@@ -17,6 +18,7 @@ import type { AdminEvent, CheckInReportRow, EventAnalyticsRow } from "@/lib/type
 import { AdminEventSelect } from "@/components/admin/AdminEventSelect";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminStatCard } from "@/components/admin/AdminStatCard";
+import { AdminConfirmedBookingsModal } from "@/components/admin/AdminConfirmedBookingsModal";
 import { metricsFromRow } from "@/components/admin/admin-analytics-utils";
 import { Card } from "@/components/ui/Card";
 
@@ -32,9 +34,12 @@ export function AdminReportsClient({
   initialCheckIns,
 }: AdminReportsClientProps) {
   const [eventId, setEventId] = useState("");
+  const [showBookingsModal, setShowBookingsModal] = useState(false);
   const [checkIns, setCheckIns] = useState(initialCheckIns);
   const [loadingCheckIns, setLoadingCheckIns] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const selectedEvent = events.find((e) => e.id === eventId);
 
   const row = useMemo(
     () => (eventId ? analytics.find((a) => a.eventId === eventId) : undefined),
@@ -80,14 +85,24 @@ export function AdminReportsClient({
         description="Select an event for focused analytics and a live check-in timeline."
       />
 
-      <div className="rounded-2xl border border-border bg-surface p-4 shadow-soft">
-        <AdminEventSelect
-          events={events}
-          value={eventId}
-          onChange={setEventId}
-          allowAll
-          label="Report for"
-        />
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-surface p-4 shadow-soft">
+        <div className="min-w-[260px] flex-1">
+          <AdminEventSelect
+            events={events}
+            value={eventId}
+            onChange={setEventId}
+            allowAll
+            label="Report for"
+          />
+        </div>
+        <button
+          type="button"
+          onClick={() => setShowBookingsModal(true)}
+          className="inline-flex items-center gap-2 rounded-xl border border-emerald-600/30 bg-emerald-50 px-4 py-2.5 text-sm font-bold text-emerald-800 transition hover:bg-emerald-100 active:scale-[0.98] dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-900/50"
+        >
+          <FontAwesomeIcon icon={faFileExcel} className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+          View Confirmed Bookings &amp; Export
+        </button>
       </div>
 
       {eventId && !row ? (
@@ -119,6 +134,8 @@ export function AdminReportsClient({
             label="Bookings"
             value={metrics.bookings}
             icon={faArrowTrendUp}
+            onClick={() => setShowBookingsModal(true)}
+            actionLabel="View details & export →"
           />
         </ul>
       ) : !eventId ? (
@@ -213,6 +230,13 @@ export function AdminReportsClient({
           </ul>
         )}
       </Card>
+
+      <AdminConfirmedBookingsModal
+        isOpen={showBookingsModal}
+        onClose={() => setShowBookingsModal(false)}
+        eventId={eventId || undefined}
+        eventTitle={selectedEvent?.title}
+      />
     </div>
   );
 }

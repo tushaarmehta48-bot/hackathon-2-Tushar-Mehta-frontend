@@ -7,6 +7,8 @@ type AdminStatCardProps = {
   hint?: string;
   icon: IconDefinition;
   tone?: "default" | "success" | "primary" | "gold";
+  onClick?: () => void;
+  actionLabel?: string;
 };
 
 const toneClass: Record<NonNullable<AdminStatCardProps["tone"]>, string> = {
@@ -29,11 +31,31 @@ export function AdminStatCard({
   hint,
   icon,
   tone = "default",
+  onClick,
+  actionLabel,
 }: AdminStatCardProps) {
+  const isClickable = typeof onClick === "function";
+
   return (
     <li
+      onClick={onClick}
+      role={isClickable ? "button" : undefined}
+      tabIndex={isClickable ? 0 : undefined}
+      onKeyDown={
+        isClickable
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onClick();
+              }
+            }
+          : undefined
+      }
       className={[
-        "rounded-2xl border p-5 shadow-soft transition hover:shadow-md",
+        "rounded-2xl border p-5 shadow-soft transition",
+        isClickable
+          ? "cursor-pointer hover:border-primary/60 hover:shadow-lg active:scale-[0.99] group"
+          : "hover:shadow-md",
         toneClass[tone],
       ].join(" ")}
     >
@@ -48,10 +70,15 @@ export function AdminStatCard({
           {hint ? (
             <p className="mt-1 text-xs text-ink-muted">{hint}</p>
           ) : null}
+          {actionLabel ? (
+            <p className="mt-2.5 inline-flex items-center gap-1 text-xs font-semibold text-primary group-hover:underline">
+              {actionLabel}
+            </p>
+          ) : null}
         </div>
         <span
           className={[
-            "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl",
+            "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl transition group-hover:scale-105",
             iconTone[tone],
           ].join(" ")}
           aria-hidden

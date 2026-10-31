@@ -19,6 +19,7 @@ import { AdminLiveFeed } from "@/components/admin/AdminLiveFeed";
 import { AdminOverviewInsights } from "@/components/admin/AdminOverviewInsights";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminStatCard } from "@/components/admin/AdminStatCard";
+import { AdminConfirmedBookingsModal } from "@/components/admin/AdminConfirmedBookingsModal";
 import {
   aggregateAnalytics,
   metricsFromRow,
@@ -33,6 +34,7 @@ type AdminOverviewClientProps = {
 
 export function AdminOverviewClient({ events, rows }: AdminOverviewClientProps) {
   const [eventId, setEventId] = useState("");
+  const [showBookingsModal, setShowBookingsModal] = useState(false);
 
   const selectedEvent = events.find((e) => e.id === eventId);
   const filteredRows = eventId
@@ -150,6 +152,8 @@ export function AdminOverviewClient({ events, rows }: AdminOverviewClientProps) 
             label="Confirmed bookings"
             value={metrics.bookings}
             icon={faCalendarCheck}
+            onClick={() => setShowBookingsModal(true)}
+            actionLabel="View details & export →"
           />
           <AdminStatCard
             label="Venue capacity"
@@ -210,6 +214,13 @@ export function AdminOverviewClient({ events, rows }: AdminOverviewClientProps) 
         )}
         </Card>
       </div>
+
+      <AdminConfirmedBookingsModal
+        isOpen={showBookingsModal}
+        onClose={() => setShowBookingsModal(false)}
+        eventId={eventId || undefined}
+        eventTitle={selectedEvent?.title}
+      />
     </div>
   );
 }

@@ -73,4 +73,25 @@ export type AdminGatekeeperAssignmentRow = {
   };
 };
 
+export type AdminBookingReportRow = {
+  id: string;
+  reference: string;
+  eventId: string;
+  eventTitle: string;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  ticketsCount: number;
+  admissionsTotal: number;
+  totalMinor: number;
+  status: string;
+  items: {
+    packageName: string;
+    quantity: number;
+    priceMinor: number;
+    admissionCount: number;
+  }[];
+  createdAt: string;
+};
+
 export type { SafeUser, PackageAvailability };

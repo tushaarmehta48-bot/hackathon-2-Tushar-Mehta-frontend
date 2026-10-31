@@ -2,6 +2,7 @@ import { apiClient } from "@/lib/api-client";
 import { serializeEventBody } from "@/lib/api/admin-event-payload";
 import type { EventAvailability } from "@/lib/types/event";
 import type {
+  AdminBookingReportRow,
   AdminEvent,
   AdminPackage,
   CheckInReportRow,
@@ -186,3 +187,18 @@ export async function adminListCheckIns(params?: {
     { cache: "no-store" },
   );
 }
+
+export async function adminListBookings(params?: {
+  eventId?: string;
+  status?: string;
+}) {
+  const search = new URLSearchParams();
+  if (params?.eventId) search.set("eventId", params.eventId);
+  if (params?.status) search.set("status", params.status);
+  const qs = search.toString();
+  return apiClient<{ bookings: AdminBookingReportRow[] }>(
+    `/admin/bookings${qs ? `?${qs}` : ""}`,
+    { cache: "no-store" },
+  );
+}
+
