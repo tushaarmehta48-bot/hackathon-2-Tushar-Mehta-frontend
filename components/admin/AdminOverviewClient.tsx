@@ -20,6 +20,7 @@ import { AdminOverviewInsights } from "@/components/admin/AdminOverviewInsights"
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminStatCard } from "@/components/admin/AdminStatCard";
 import { AdminConfirmedBookingsModal } from "@/components/admin/AdminConfirmedBookingsModal";
+import { AdminCheckInsModal } from "@/components/admin/AdminCheckInsModal";
 import {
   aggregateAnalytics,
   metricsFromRow,
@@ -35,6 +36,7 @@ type AdminOverviewClientProps = {
 export function AdminOverviewClient({ events, rows }: AdminOverviewClientProps) {
   const [eventId, setEventId] = useState("");
   const [showBookingsModal, setShowBookingsModal] = useState(false);
+  const [showCheckInsModal, setShowCheckInsModal] = useState(false);
 
   const selectedEvent = events.find((e) => e.id === eventId);
   const filteredRows = eventId
@@ -141,6 +143,8 @@ export function AdminOverviewClient({ events, rows }: AdminOverviewClientProps) 
             hint={`${(metrics.checkInRate * 100).toFixed(1)}% of sold`}
             icon={faUserCheck}
             tone="success"
+            onClick={() => setShowCheckInsModal(true)}
+            actionLabel="View details & export →"
           />
           <AdminStatCard
             label="Revenue"
@@ -218,6 +222,13 @@ export function AdminOverviewClient({ events, rows }: AdminOverviewClientProps) 
       <AdminConfirmedBookingsModal
         isOpen={showBookingsModal}
         onClose={() => setShowBookingsModal(false)}
+        eventId={eventId || undefined}
+        eventTitle={selectedEvent?.title}
+      />
+
+      <AdminCheckInsModal
+        isOpen={showCheckInsModal}
+        onClose={() => setShowCheckInsModal(false)}
         eventId={eventId || undefined}
         eventTitle={selectedEvent?.title}
       />

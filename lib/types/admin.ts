@@ -37,12 +37,18 @@ export type EventAnalyticsRow = {
 export type CheckInReportRow = {
   id: string;
   eventId: string;
+  eventTitle?: string;
+  userName?: string;
+  userEmail?: string;
   gatekeeperId: string;
   gatekeeperName?: string | null;
   gateId?: string | null;
   result: string;
   timestamp: string;
   ticketCode?: string;
+  ticketStatus?: string;
+  admissionsTotal?: number;
+  admissionsUsed?: number;
   bookingReference?: string;
 };
 

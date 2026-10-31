@@ -19,6 +19,7 @@ import { AdminEventSelect } from "@/components/admin/AdminEventSelect";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminStatCard } from "@/components/admin/AdminStatCard";
 import { AdminConfirmedBookingsModal } from "@/components/admin/AdminConfirmedBookingsModal";
+import { AdminCheckInsModal } from "@/components/admin/AdminCheckInsModal";
 import { metricsFromRow } from "@/components/admin/admin-analytics-utils";
 import { Card } from "@/components/ui/Card";
 
@@ -35,6 +36,7 @@ export function AdminReportsClient({
 }: AdminReportsClientProps) {
   const [eventId, setEventId] = useState("");
   const [showBookingsModal, setShowBookingsModal] = useState(false);
+  const [showCheckInsModal, setShowCheckInsModal] = useState(false);
   const [checkIns, setCheckIns] = useState(initialCheckIns);
   const [loadingCheckIns, setLoadingCheckIns] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -123,6 +125,8 @@ export function AdminReportsClient({
             hint={`${(metrics.checkInRate * 100).toFixed(1)}% rate`}
             icon={faUserCheck}
             tone="success"
+            onClick={() => setShowCheckInsModal(true)}
+            actionLabel="View details & export →"
           />
           <AdminStatCard
             label="Revenue"
@@ -234,6 +238,13 @@ export function AdminReportsClient({
       <AdminConfirmedBookingsModal
         isOpen={showBookingsModal}
         onClose={() => setShowBookingsModal(false)}
+        eventId={eventId || undefined}
+        eventTitle={selectedEvent?.title}
+      />
+
+      <AdminCheckInsModal
+        isOpen={showCheckInsModal}
+        onClose={() => setShowCheckInsModal(false)}
         eventId={eventId || undefined}
         eventTitle={selectedEvent?.title}
       />
