@@ -109,7 +109,20 @@ export function EventTicketCard({
         <ul className="relative mt-4 space-y-2 text-sm text-white/85">
           <li className="flex items-start gap-2" suppressHydrationWarning>
             <FontAwesomeIcon icon={faCalendarDays} className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent-gold" />
-            {formatEventRange(event.startAt, event.endAt, event.timezone)}
+            <div>
+              {ticket.bookingDate ? (
+                <div>
+                  <span className="font-semibold text-accent-gold">
+                    Date of Visit: {ticket.bookingDate}
+                  </span>
+                  <span className="block text-xs text-white/60">
+                    {formatEventRange(event.startAt, event.endAt, event.timezone)}
+                  </span>
+                </div>
+              ) : (
+                formatEventRange(event.startAt, event.endAt, event.timezone)
+              )}
+            </div>
           </li>
           <li className="flex items-start gap-2">
             <FontAwesomeIcon icon={faLocationDot} className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent-gold" />

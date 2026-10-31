@@ -60,9 +60,19 @@ export async function BookingDetailContent({
           {eventTitle ?? "Booking"}
         </h1>
         <p className="font-mono text-sm text-ink-muted">{booking.reference}</p>
-        <p className="text-sm capitalize text-ink-muted">
-          Status: {booking.status} · Total {formatMinor(booking.totalMinor)}
-        </p>
+        <div className="flex flex-wrap items-center gap-2 pt-1 text-sm text-ink-muted">
+          <span className="capitalize">Status: {booking.status}</span>
+          <span>·</span>
+          <span>Total: {formatMinor(booking.totalMinor)}</span>
+          {booking.bookingDate ? (
+            <>
+              <span>·</span>
+              <span className="font-medium text-primary">
+                📅 Attendance Date: {booking.bookingDate}
+              </span>
+            </>
+          ) : null}
+        </div>
       </div>
 
       <section className="mt-8 space-y-4">

@@ -50,6 +50,7 @@ export type CheckInReportRow = {
   admissionsTotal?: number;
   admissionsUsed?: number;
   bookingReference?: string;
+  bookingDate?: string | null;
 };
 
 export type GatekeeperAssignment = {
@@ -91,6 +92,7 @@ export type AdminBookingReportRow = {
   admissionsTotal: number;
   totalMinor: number;
   status: string;
+  bookingDate?: string | null;
   items: {
     packageName: string;
     quantity: number;
@@ -101,3 +103,4 @@ export type AdminBookingReportRow = {
 };
 
 export type { SafeUser, PackageAvailability };
+

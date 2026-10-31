@@ -11,6 +11,7 @@ export type BookingSummary = {
   id: string;
   reference: string;
   eventId: string;
+  bookingDate?: string | null;
   items: BookingLineItem[];
   totalMinor: number;
   status: string;
@@ -25,6 +26,7 @@ export type TicketPublic = {
   eventId: string;
   packageId: string;
   status: string;
+  bookingDate?: string | null;
   checkedInAt?: string | null;
   admissionsTotal?: number;
   admissionsUsed?: number;
@@ -33,6 +35,7 @@ export type TicketPublic = {
 
 export type BookingQuote = {
   eventId: string;
+  bookingDate?: string | null;
   items: Array<{
     packageId: string;
     packageName: string;
@@ -46,5 +49,7 @@ export type BookingQuote = {
 
 export type BookingRequest = {
   eventId: string;
+  bookingDate?: string;
   items: Array<{ packageId: string; quantity: number }>;
 };
+

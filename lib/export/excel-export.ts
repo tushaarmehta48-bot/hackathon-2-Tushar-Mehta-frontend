@@ -138,18 +138,19 @@ export function exportBookingsToExcel(
    <Column ss:Width="80"/>
    <Column ss:Width="90"/>
    <Column ss:Width="100"/>
+   <Column ss:Width="120"/>
    <Column ss:Width="150"/>
    <Column ss:Width="90"/>
 
    <!-- Branding Header -->
    <Row ss:Height="28">
-    <Cell ss:MergeAcross="10" ss:StyleID="BrandTitle">
+    <Cell ss:MergeAcross="11" ss:StyleID="BrandTitle">
      <Data ss:Type="String">&#9679; ${appName} — Event Management Platform</Data>
     </Cell>
    </Row>
 
    <Row ss:Height="22">
-    <Cell ss:MergeAcross="10" ss:StyleID="ReportHeader">
+    <Cell ss:MergeAcross="11" ss:StyleID="ReportHeader">
      <Data ss:Type="String">CONFIRMED BOOKINGS REPORT</Data>
     </Cell>
    </Row>
@@ -159,17 +160,17 @@ export function exportBookingsToExcel(
     <Cell ss:StyleID="MetaLabel"><Data ss:Type="String">Generated:</Data></Cell>
     <Cell ss:MergeAcross="3" ss:StyleID="MetaValue"><Data ss:Type="String">${escapeXml(dateStr)} ${escapeXml(timeStr)}</Data></Cell>
     <Cell ss:StyleID="MetaLabel"><Data ss:Type="String">Event Filter:</Data></Cell>
-    <Cell ss:MergeAcross="4" ss:StyleID="MetaValue"><Data ss:Type="String">${escapeXml(filterEventTitle || "All Events")}</Data></Cell>
+    <Cell ss:MergeAcross="5" ss:StyleID="MetaValue"><Data ss:Type="String">${escapeXml(filterEventTitle || "All Events")}</Data></Cell>
    </Row>
    <Row ss:Height="18">
     <Cell ss:StyleID="MetaLabel"><Data ss:Type="String">Total Bookings:</Data></Cell>
     <Cell ss:MergeAcross="3" ss:StyleID="MetaValue"><Data ss:Type="String">${bookings.length} confirmed</Data></Cell>
     <Cell ss:StyleID="MetaLabel"><Data ss:Type="String">Total Tickets:</Data></Cell>
-    <Cell ss:MergeAcross="4" ss:StyleID="MetaValue"><Data ss:Type="String">${totalTickets} tickets</Data></Cell>
+    <Cell ss:MergeAcross="5" ss:StyleID="MetaValue"><Data ss:Type="String">${totalTickets} tickets</Data></Cell>
    </Row>
    <Row ss:Height="18">
     <Cell ss:StyleID="MetaLabel"><Data ss:Type="String">Total Revenue:</Data></Cell>
-    <Cell ss:MergeAcross="9" ss:StyleID="MetaValue"><Data ss:Type="String">${escapeXml(totalRevenueStr)}</Data></Cell>
+    <Cell ss:MergeAcross="10" ss:StyleID="MetaValue"><Data ss:Type="String">${escapeXml(totalRevenueStr)}</Data></Cell>
    </Row>
 
    <!-- Empty Separator Row -->
@@ -186,6 +187,7 @@ export function exportBookingsToExcel(
     <Cell ss:StyleID="ColHeader"><Data ss:Type="String">Tickets (Qty)</Data></Cell>
     <Cell ss:StyleID="ColHeader"><Data ss:Type="String">Admissions</Data></Cell>
     <Cell ss:StyleID="ColHeader"><Data ss:Type="String">Price Paid</Data></Cell>
+    <Cell ss:StyleID="ColHeader"><Data ss:Type="String">Attendance Date</Data></Cell>
     <Cell ss:StyleID="ColHeader"><Data ss:Type="String">Booking Date &amp; Time</Data></Cell>
     <Cell ss:StyleID="ColHeader"><Data ss:Type="String">Status</Data></Cell>
    </Row>
@@ -209,6 +211,7 @@ export function exportBookingsToExcel(
     <Cell ss:StyleID="CenterCell"><Data ss:Type="Number">${b.ticketsCount}</Data></Cell>
     <Cell ss:StyleID="CenterCell"><Data ss:Type="Number">${b.admissionsTotal}</Data></Cell>
     <Cell ss:StyleID="PriceCell"><Data ss:Type="String">${escapeXml(priceStr)}</Data></Cell>
+    <Cell ss:StyleID="CenterCell"><Data ss:Type="String">${escapeXml(b.bookingDate || "Event Date")}</Data></Cell>
     <Cell ss:StyleID="CenterCell"><Data ss:Type="String">${escapeXml(dateFormatted)}</Data></Cell>
     <Cell ss:StyleID="StatusConfirmed"><Data ss:Type="String">${escapeXml(b.status.toUpperCase())}</Data></Cell>
    </Row>`;
@@ -221,7 +224,7 @@ export function exportBookingsToExcel(
     <Cell ss:StyleID="SummaryTotal"><Data ss:Type="Number">${totalTickets}</Data></Cell>
     <Cell ss:StyleID="SummaryTotal"><Data ss:Type="Number">${bookings.reduce((sum, b) => sum + (b.admissionsTotal || 1), 0)}</Data></Cell>
     <Cell ss:StyleID="SummaryTotal"><Data ss:Type="String">${escapeXml(totalRevenueStr)}</Data></Cell>
-    <Cell ss:MergeAcross="1" ss:StyleID="SummaryTotal"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="SummaryTotal"><Data ss:Type="String"></Data></Cell>
    </Row>
   </Table>
  </Worksheet>
@@ -253,6 +256,7 @@ export function exportBookingsToCsv(
     "Tickets (Qty)",
     "Admissions Total",
     "Price Paid",
+    "Attendance Date",
     "Booking Date & Time",
     "Status",
   ];
@@ -277,6 +281,7 @@ export function exportBookingsToCsv(
       b.ticketsCount,
       b.admissionsTotal,
       escapeCsv(formatMinor(b.totalMinor)),
+      escapeCsv(b.bookingDate || "Event Date"),
       escapeCsv(formatDate(b.createdAt)),
       escapeCsv(b.status.toUpperCase()),
     ].join(",");

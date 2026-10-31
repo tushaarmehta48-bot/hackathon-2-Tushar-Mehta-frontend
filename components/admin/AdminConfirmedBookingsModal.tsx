@@ -11,6 +11,7 @@ import {
   faUser,
   faWallet,
   faCalendarCheck,
+  faCalendarDays,
   faSpinner,
   faBuilding,
 } from "@fortawesome/free-solid-svg-icons";
@@ -316,7 +317,8 @@ export function AdminConfirmedBookingsModal({
                     <th className="py-3.5 px-3">Customer Name</th>
                     <th className="py-3.5 px-3">Tickets (Qty)</th>
                     <th className="py-3.5 px-3">Price Paid</th>
-                    <th className="py-3.5 px-3">Booking Date &amp; Time</th>
+                    <th className="py-3.5 px-3">Attendance Date</th>
+                    <th className="py-3.5 px-3">Booked At</th>
                     <th className="py-3.5 px-3">Event</th>
                     <th className="py-3.5 px-3">Reference</th>
                     <th className="py-3.5 pl-3 pr-4 text-center">Status</th>
@@ -364,6 +366,16 @@ export function AdminConfirmedBookingsModal({
                           <span className="font-mono text-base font-bold text-emerald-600 dark:text-emerald-400">
                             {formatMinor(b.totalMinor)}
                           </span>
+                        </td>
+                        <td className="py-3.5 px-3">
+                          {b.bookingDate ? (
+                            <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
+                              <FontAwesomeIcon icon={faCalendarDays} className="h-2.5 w-2.5" />
+                              {b.bookingDate}
+                            </span>
+                          ) : (
+                            <span className="text-xs text-ink-muted">Event Date</span>
+                          )}
                         </td>
                         <td className="py-3.5 px-3">
                           <span className="text-xs font-medium text-ink">
