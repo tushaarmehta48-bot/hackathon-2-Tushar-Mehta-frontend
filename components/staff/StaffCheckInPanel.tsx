@@ -22,9 +22,11 @@ export function StaffCheckInPanel({
   gateId: defaultGateId,
 }: StaffCheckInPanelProps) {
   const [token, setToken] = useState("");
+  const [lastToken, setLastToken] = useState("");
   const [gateId, setGateId] = useState(defaultGateId ?? "");
   const [result, setResult] = useState<CheckInResponse | null>(null);
   const [loading, setLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [phase, setPhase] = useState<ScanPhase>("idle");
   const scanLockedRef = useRef(false);
@@ -33,8 +35,8 @@ export function StaffCheckInPanel({
   const scanning = phase === "scanning";
 
   const submitToken = useCallback(
-    async (qrToken: string) => {
-      if (scanLockedRef.current || held) {
+    async (qrToken: string, forceAdmitAll = false) => {
+      if (scanLockedRef.current || (held && !forceAdmitAll)) {
         return;
       }
       const trimmed = qrToken.trim();
@@ -43,12 +45,18 @@ export function StaffCheckInPanel({
         return;
       }
       scanLockedRef.current = true;
+      setLastToken(trimmed);
       setError(null);
-      setLoading(true);
+      if (forceAdmitAll) {
+        setActionLoading(true);
+      } else {
+        setLoading(true);
+      }
       try {
         const response = await postCheckIn({
           qrToken: trimmed,
           gateId: gateId.trim() || undefined,
+          admitAll: forceAdmitAll,
         });
         setResult(response);
         setPhase("held");
@@ -64,10 +72,18 @@ export function StaffCheckInPanel({
         setPhase("held");
       } finally {
         setLoading(false);
+        setActionLoading(false);
+        scanLockedRef.current = false;
       }
     },
     [gateId, held],
   );
+
+  const handleScanAtOnce = useCallback(() => {
+    if (lastToken) {
+      void submitToken(lastToken, true);
+    }
+  }, [lastToken, submitToken]);
 
   function onManualSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -88,6 +104,7 @@ export function StaffCheckInPanel({
     setResult(null);
     setError(null);
     setToken("");
+    setLastToken("");
     scanLockedRef.current = false;
     setPhase("idle");
   }
@@ -118,7 +135,11 @@ export function StaffCheckInPanel({
       <Card title="Camera check-in">
         <div className="space-y-4">
           {held ? (
-            <CheckInResultBanner response={result} />
+            <CheckInResultBanner
+              response={result}
+              onScanAtOnce={handleScanAtOnce}
+              isScanningAtOnce={actionLoading}
+            />
           ) : scanning ? (
             <>
               <p className="text-sm text-ink-muted">

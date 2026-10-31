@@ -8,7 +8,11 @@ export async function getGatekeeperAssignments() {
   );
 }
 
-export async function postCheckIn(body: { qrToken: string; gateId?: string }) {
+export async function postCheckIn(body: {
+  qrToken: string;
+  gateId?: string;
+  admitAll?: boolean;
+}) {
   return apiClient<CheckInResponse>("/gatekeeper/check-in", {
     method: "POST",
     body,

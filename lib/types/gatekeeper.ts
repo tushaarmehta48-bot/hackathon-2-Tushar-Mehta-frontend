@@ -26,6 +26,7 @@ export type CheckInResultType =
 export type CheckInResponse = {
   result: CheckInResultType;
   message: string;
+  admittedCount?: number;
   ticket?: {
     id: string;
     ticketCode: string;
