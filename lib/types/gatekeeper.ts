@@ -21,12 +21,14 @@ export type CheckInResultType =
   | "invalid"
   | "cancelled"
   | "wrong_event"
-  | "unauthorised";
+  | "unauthorised"
+  | "requires_choice";
 
 export type CheckInResponse = {
   result: CheckInResultType;
   message: string;
   admittedCount?: number;
+  requiresChoice?: boolean;
   ticket?: {
     id: string;
     ticketCode: string;

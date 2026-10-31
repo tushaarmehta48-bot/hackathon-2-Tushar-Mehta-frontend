@@ -35,8 +35,9 @@ export function StaffCheckInPanel({
   const scanning = phase === "scanning";
 
   const submitToken = useCallback(
-    async (qrToken: string, forceAdmitAll = false) => {
-      if (scanLockedRef.current || (held && !forceAdmitAll)) {
+    async (qrToken: string, admitAll?: boolean) => {
+      const isDecision = admitAll !== undefined;
+      if (scanLockedRef.current || (held && !isDecision)) {
         return;
       }
       const trimmed = qrToken.trim();
@@ -47,7 +48,7 @@ export function StaffCheckInPanel({
       scanLockedRef.current = true;
       setLastToken(trimmed);
       setError(null);
-      if (forceAdmitAll) {
+      if (isDecision) {
         setActionLoading(true);
       } else {
         setLoading(true);
@@ -56,7 +57,7 @@ export function StaffCheckInPanel({
         const response = await postCheckIn({
           qrToken: trimmed,
           gateId: gateId.trim() || undefined,
-          admitAll: forceAdmitAll,
+          admitAll,
         });
         setResult(response);
         setPhase("held");
@@ -137,6 +138,8 @@ export function StaffCheckInPanel({
           {held ? (
             <CheckInResultBanner
               response={result}
+              onChoiceSelect={(admitAll) => void submitToken(lastToken, admitAll)}
+              onCancelChoice={checkNextGuest}
               onScanAtOnce={handleScanAtOnce}
               isScanningAtOnce={actionLoading}
             />
@@ -160,13 +163,15 @@ export function StaffCheckInPanel({
 
           <div className="flex flex-col gap-2 sm:flex-row">
             {held ? (
-              <Button
-                type="button"
-                className="min-h-12 flex-1 text-base"
-                onClick={checkNextGuest}
-              >
-                Check next guest
-              </Button>
+              result?.result !== "requires_choice" ? (
+                <Button
+                  type="button"
+                  className="min-h-12 flex-1 text-base"
+                  onClick={checkNextGuest}
+                >
+                  Check next guest
+                </Button>
+              ) : null
             ) : scanning ? (
               <Button
                 type="button"
