@@ -64,9 +64,9 @@ export async function EventsBrowseContent({
           <img
             src={EVENTS_PAGE_HERO_IMAGE}
             alt=""
-            className="h-full w-full scale-105 object-cover object-center opacity-45"
+            className="h-full w-full scale-105 object-cover object-center opacity-65"
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-bg-milk/92 via-bg-milk/78 to-primary/25" />
+          <div className="absolute inset-0 bg-gradient-to-r from-bg-milk via-bg-milk/85 to-bg-milk/40" />
           <div className="absolute -right-20 top-10 h-56 w-56 rounded-full bg-accent-gold/25 blur-3xl" />
           <div className="absolute -left-16 bottom-0 h-48 w-48 rounded-full bg-primary/20 blur-3xl" />
         </div>

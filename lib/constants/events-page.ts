@@ -1,9 +1,9 @@
 /** Events browse page hero — distinct from home marketing hero. */
 export const EVENTS_PAGE_HERO_IMAGE =
-  "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=2400&q=85";
+  "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&w=2400&q=85";
 
 export const EVENTS_PAGE_HERO_ALT =
-  "Warm sunset over an outdoor concert crowd with stage lights";
+  "Euphoric festival crowd celebrating under golden fireworks and stage lights";
 
 export const EVENTS_PAGE_HEADING = "Discover what's on";
 
