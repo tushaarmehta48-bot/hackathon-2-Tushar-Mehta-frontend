@@ -58,37 +58,39 @@ export async function EventsBrowseContent({
 
   return (
     <>
-      <section className="relative isolate border-b border-border/80">
+      <section className="relative isolate overflow-hidden border-b border-border/80 bg-ink">
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={EVENTS_PAGE_HERO_IMAGE}
             alt=""
-            className="h-full w-full scale-105 object-cover object-center opacity-65"
+            className="h-full w-full scale-105 object-cover object-center opacity-75"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-bg-milk via-bg-milk/85 to-bg-milk/40" />
-          <div className="absolute -right-20 top-10 h-56 w-56 rounded-full bg-accent-gold/25 blur-3xl" />
-          <div className="absolute -left-16 bottom-0 h-48 w-48 rounded-full bg-primary/20 blur-3xl" />
+          <div className="absolute inset-0 bg-gradient-to-r from-ink/90 via-ink/65 to-ink/35" />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/95 via-transparent to-ink/30" />
+          <div className="absolute -right-20 top-10 h-64 w-64 rounded-full bg-accent-gold/20 blur-3xl" />
+          <div className="absolute -left-16 bottom-0 h-56 w-56 rounded-full bg-primary/25 blur-3xl" />
         </div>
         <span className="sr-only">{EVENTS_PAGE_HERO_ALT}</span>
         <div className="relative z-10 mx-auto max-w-7xl overflow-visible px-6 py-12 md:py-16">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl space-y-3">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
+              <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-accent-gold">
+                <span className="h-1.5 w-1.5 rounded-full bg-accent-gold shadow-[0_0_8px_rgba(212,188,106,0.9)]" />
                 EventPulse · Explore
               </p>
-              <h1 className="font-display text-4xl font-semibold tracking-tight text-ink md:text-5xl">
+              <h1 className="font-display text-4xl font-semibold tracking-tight text-white md:text-5xl">
                 {EVENTS_PAGE_HEADING}
               </h1>
-              <p className="text-base leading-relaxed text-ink-muted md:text-lg">
+              <p className="text-base leading-relaxed text-white/85 md:text-lg">
                 {EVENTS_PAGE_SUBHEADING}
               </p>
             </div>
-            <LiveTodayDate variant="surface" className="lg:max-w-sm lg:shrink-0" />
+            <LiveTodayDate variant="hero" className="lg:max-w-sm lg:shrink-0" />
           </div>
           <div className="relative z-50 mt-8 overflow-visible">
             <EventSearchBar
-              variant="inline"
+              variant="hero"
               defaultQuery={q ?? ""}
               defaultCategory={category ?? ""}
               defaultFrom={from ?? ""}
