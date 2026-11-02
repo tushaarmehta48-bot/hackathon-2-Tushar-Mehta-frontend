@@ -72,7 +72,7 @@ export async function EventsBrowseContent({
           <div className="absolute -left-16 bottom-0 h-56 w-56 rounded-full bg-primary/25 blur-3xl" />
         </div>
         <span className="sr-only">{EVENTS_PAGE_HERO_ALT}</span>
-        <div className="relative z-10 mx-auto max-w-7xl overflow-visible px-6 py-12 md:py-16">
+        <div className="relative z-10 mx-auto max-w-7xl overflow-visible px-6 pt-28 pb-12 sm:pt-32 sm:pb-16 md:pt-36">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl space-y-3">
               <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-accent-gold">

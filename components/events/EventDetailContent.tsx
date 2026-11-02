@@ -88,7 +88,7 @@ export async function EventDetailContent({ params }: EventDetailContentProps) {
           <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/25" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_100%,rgba(216,92,65,0.25),transparent_55%)]" />
 
-          <div className="relative mx-auto flex min-h-[320px] max-w-6xl flex-col justify-end px-6 pb-10 pt-24 sm:min-h-[380px] sm:pb-14 md:min-h-[420px]">
+          <div className="relative mx-auto flex min-h-[340px] max-w-6xl flex-col justify-end px-6 pb-10 pt-28 sm:min-h-[400px] sm:pb-14 md:min-h-[440px] md:pt-32">
             <div className="flex flex-wrap items-center gap-2">
               <span className="rounded-full border border-white/25 bg-ink/70 px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-white backdrop-blur-sm">
                 {categoryLabel(event.category)}

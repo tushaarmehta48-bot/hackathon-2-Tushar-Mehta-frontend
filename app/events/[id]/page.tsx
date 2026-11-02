@@ -44,8 +44,8 @@ export async function generateMetadata({
 
 export default function EventDetailPage({ params }: EventDetailPageProps) {
   return (
-    <div className="flex min-h-full flex-1 flex-col">
-      <PublicNav />
+    <div className="flex min-h-full w-full max-w-full flex-1 flex-col overflow-x-clip">
+      <PublicNav variant="overlay" />
       <Suspense fallback={<PortalLoading />}>
         <EventDetailContent params={params} />
       </Suspense>

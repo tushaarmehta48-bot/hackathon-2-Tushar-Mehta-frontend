@@ -31,9 +31,15 @@ export default function EventsBrowsePage({
   searchParams: EventsSearchParams;
 }) {
   return (
-    <div className="flex min-h-full flex-1 flex-col">
-      <PublicNav />
-      <Suspense fallback={<LoadingState label="Loading events…" />}>
+    <div className="flex min-h-full w-full max-w-full flex-1 flex-col overflow-x-clip">
+      <PublicNav variant="overlay" />
+      <Suspense
+        fallback={
+          <div className="pt-28">
+            <LoadingState label="Loading events…" />
+          </div>
+        }
+      >
         <EventsList searchParams={searchParams} />
       </Suspense>
       <MarketingFooter />
